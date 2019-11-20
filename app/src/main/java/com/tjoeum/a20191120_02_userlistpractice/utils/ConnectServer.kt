@@ -17,7 +17,7 @@ class ConnectServer {
 
         var BASE_URL = "http://192.168.0.26:5000"
 
-        fun gerRequestUserList(context: Context, neenActive: String, jsonResponseHandler: JsonResponseHandler){
+        fun getRequestUserList(context: Context, neenActive: String, jsonResponseHandler: JsonResponseHandler){
 
             val client = OkHttpClient()
 
@@ -48,5 +48,34 @@ class ConnectServer {
 
         }
 
+        fun getRequestCategoryList(context: Context,  jsonResponseHandler: JsonResponseHandler){
+
+            val client = OkHttpClient()
+
+            var urBuilder = "${BASE_URL}/system/user_category".toHttpUrlOrNull()!!.newBuilder()
+
+            var requestUrl = urBuilder.build().toString()
+
+            Log.d("가공된GETURL",requestUrl)
+
+            val request = Request.Builder().url(requestUrl).build()
+
+
+            client.newCall(request).enqueue(object : Callback{
+                override fun onFailure(call: Call, e: IOException) {
+
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+
+                    val body = response.body!!.string()
+                    val jsonObject = JSONObject(body)
+                    jsonResponseHandler.onResponse(jsonObject)
+
+                }
+            })
+
+
+        }
     }
 }
