@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import com.tjoeum.a20191120_02_userlistpractice.adapters.CategorySpinnerAdapter
 import com.tjoeum.a20191120_02_userlistpractice.datas.Category
+import com.tjoeum.a20191120_02_userlistpractice.datas.User
 import com.tjoeum.a20191120_02_userlistpractice.utils.ConnectServer
 import kotlinx.android.synthetic.main.activity_user_detail.*
 import org.json.JSONObject
@@ -12,7 +13,7 @@ class UserDetailActivity : BaseActivity() {
 
     var categoryList = ArrayList<Category>()
     var categorySpinnerAdapter: CategorySpinnerAdapter? = null
-
+    var userdata: User? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_detail)
@@ -24,8 +25,20 @@ class UserDetailActivity : BaseActivity() {
     }
 
     override fun setValues() {
+
+        userdata = intent.getSerializableExtra("user") as User
+
+
+        userIdEdt.setText(userdata?.loginId)
+        userNameEdt.setText(userdata?.name)
+
+        createdAtTxt.text = userdata?.getFormatTedCreatedAt()
+
         categorySpinnerAdapter = CategorySpinnerAdapter(mContext,categoryList)
         categorySelectSpinner.adapter = categorySpinnerAdapter
+
+
+
 
         getCategoryFromServer()
 
@@ -55,6 +68,8 @@ class UserDetailActivity : BaseActivity() {
 
                     runOnUiThread{
                         categorySpinnerAdapter?.notifyDataSetChanged()
+                        var categoryIndex = categoryList.indexOf(userdata?.category)
+                        categorySelectSpinner.setSelection(categoryIndex)
                     }
 
                 }else{

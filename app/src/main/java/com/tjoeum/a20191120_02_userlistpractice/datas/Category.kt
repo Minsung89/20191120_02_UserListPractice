@@ -23,4 +23,17 @@ class Category : Serializable{
         }
 
     }
+
+
+    override fun equals(other: Any?): Boolean {
+        var result = false
+
+        var otherCategory = other as Category
+        if(otherCategory.id ==  this.id){
+            result = true
+        }
+
+        return result
+
+    }
 }
