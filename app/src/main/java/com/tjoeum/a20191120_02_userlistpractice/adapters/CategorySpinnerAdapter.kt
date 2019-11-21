@@ -1,6 +1,8 @@
 package com.tjoeum.a20191120_02_userlistpractice.adapters
 import android.content.Context
 import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,6 +39,8 @@ class CategorySpinnerAdapter(context: Context, res: Int, list: ArrayList<Categor
 
         categoryTitleTxt.text = data.title
 
+        categoryColorImg.background.setColorFilter(Color.parseColor(data.color),PorterDuff.Mode.SRC_ATOP)
+
         categoryColorImg.setBackgroundColor(Color.parseColor(data.color))
 
         return row
@@ -59,7 +63,7 @@ class CategorySpinnerAdapter(context: Context, res: Int, list: ArrayList<Categor
 
         categoryTitleTxt.text = data.title
 
-        categoryColorImg.setBackgroundColor(Color.parseColor(data.color))
+        categoryColorImg.background.setColorFilter(Color.parseColor(data.color),PorterDuff.Mode.SRC_ATOP)
 
         return row
 
