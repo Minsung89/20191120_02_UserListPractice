@@ -1,12 +1,17 @@
 package com.tjoeum.a20191120_02_userlistpractice
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.tjoeum.a20191120_02_userlistpractice.adapters.CategorySpinnerAdapter
+import com.tjoeum.a20191120_02_userlistpractice.datas.Category
 import com.tjoeum.a20191120_02_userlistpractice.utils.ConnectServer
+import kotlinx.android.synthetic.main.activity_user_detail.*
 import org.json.JSONObject
 
 class UserDetailActivity : BaseActivity() {
+
+    var categoryList = ArrayList<Category>()
+    var categorySpinnerAdapter: CategorySpinnerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,6 +24,10 @@ class UserDetailActivity : BaseActivity() {
     }
 
     override fun setValues() {
+        categorySpinnerAdapter = CategorySpinnerAdapter(mContext,categoryList)
+        categorySelectSpinner.adapter = categorySpinnerAdapter
+
+        getCategoryFromServer()
 
     }
 
@@ -26,7 +35,34 @@ class UserDetailActivity : BaseActivity() {
 
         ConnectServer.getRequestCategoryList(mContext, object: ConnectServer.JsonResponseHandler{
             override fun onResponse(json: JSONObject) {
-                Log.d("사용자목록응답", json.toString())
+                Log.d("카테고리응답", json.toString())
+
+                var code = json.getInt("code")
+
+                if(code == 200){
+                    var data = json.getJSONObject("data")
+                    var userCategory = data.getJSONArray("user_categories")
+
+
+                    categoryList.clear()
+
+                    for (i in 0..userCategory.length() - 1){
+
+                        var uc = userCategory.getJSONObject(i)
+                        var categoryData = Category.getCategoryJson(uc)
+                        categoryList.add(categoryData)
+                    }
+
+                    runOnUiThread{
+                        categorySpinnerAdapter?.notifyDataSetChanged()
+                    }
+
+                }else{
+
+                }
+
+
+
             }
         })
     }
